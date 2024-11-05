@@ -72,6 +72,7 @@ jobs:
         # Restore and clean the checkout and replace the dependency again using
         # images from the checkout above
         run: |
+          cd osbuild-composer
           git restore .
           git clean -xfd .
           go mod edit -replace github.com/osbuild/images=../images
