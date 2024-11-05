@@ -51,7 +51,7 @@ jobs:
           merge_base_sha: ${{ github.event.pull_request.base.sha }}
         run: |
           cd osbuild-composer
-          go mod edit -replace github.com/osbuild/images=github.com/osbuild/images@$merge_base_sha
+          go mod edit -replace github.com/osbuild/images=github.com/achilleas-k/images-message-test@$merge_base_sha
           ./tools/prepare-source.sh
 
       - name: Run unit tests (merge base)
