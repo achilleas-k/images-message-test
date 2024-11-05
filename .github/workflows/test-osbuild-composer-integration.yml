@@ -1,5 +1,5 @@
 ---
-name: "[integration]"
+name: "osbuild-composer integration"
 
 on:  # yamllint disable-line rule:truthy
   pull_request_target:
@@ -11,7 +11,7 @@ on:  # yamllint disable-line rule:truthy
 jobs:
 
   unit-tests:
-    name: "🛃 osbuild-composer unit tests"
+    name: "🛃 Unit tests"
     runs-on: ubuntu-20.04
     container:
       image: registry.fedoraproject.org/fedora:latest
@@ -91,6 +91,7 @@ jobs:
           fi
 
   post-results:
+    name: "Post breakage notice"
     permissions:
       pull-requests: write
     runs-on: ubuntu-latest
