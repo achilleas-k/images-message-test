@@ -2,16 +2,26 @@
 name: "[integration]"
 
 on:  # yamllint disable-line rule:truthy
-  pull_request:
+  pull_request_target:
     branches:
-      - "*"
+      # skip test for backport branches since it doesn't make sense to test
+      # those against osbuild-composer main
+      - main
 
 jobs:
+
   unit-tests:
     name: "🛃 osbuild-composer unit tests"
     runs-on: ubuntu-20.04
     container:
       image: registry.fedoraproject.org/fedora:latest
+    outputs:
+      # Define job outputs
+      # (see https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/passing-information-between-jobs#example-defining-outputs-for-a-job)
+      # Define one output for the test with the merge base and one for the test
+      # agains the PR
+      base_test: ${{ steps.tests-base.outputs.base_test }}
+      pr_test: ${{ steps.tests-pr.outputs.pr_test }}
 
     steps:
       # krb5-devel is needed to test internal/upload/koji package
@@ -27,74 +37,85 @@ jobs:
           repository: osbuild/osbuild-composer
           ref: main
 
-      - name: Check out the osbuild/images code
+      - name: Check out osbuild/images for the PR
         uses: actions/checkout@v4
         with:
           path: images
           ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: Update the osbuild/images reference
-        run: |
-          cd osbuild-composer
-          go mod edit -replace github.com/osbuild/images=../images
-          ./tools/prepare-source.sh
 
       - name: Mark the working directory as safe for git
         run: git config --global --add safe.directory "$(pwd)"
 
-      - name: Run unit tests
-        working-directory: osbuild-composer
-        run: go test -v -race ./...
-
-  lint:
-    name: "⌨ osbuild-composer Golang Lint"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up Go 1.21
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.21"
-        id: go
-
-      - name: Check out osbuild-composer main branch
-        uses: actions/checkout@v4
-        with:
-          path: osbuild-composer
-          repository: osbuild/osbuild-composer
-          ref: main
-
-      - name: Check out the osbuild/images code
-        uses: actions/checkout@v4
-        with:
-          path: images
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      - name: Update the osbuild/images reference
-        working-directory: osbuild-composer
+      - name: Update the osbuild/images reference to the merge base with main
+        env:
+          merge_base_sha: ${{ github.event.pull_request.base.sha }}
         run: |
+          cd osbuild-composer
+          go mod edit -replace github.com/osbuild/images=github.com/osbuild/images@$merge_base_sha
+          ./tools/prepare-source.sh
+
+      - name: Run unit tests (merge base)
+        working-directory: osbuild-composer
+        id: tests-base
+        # This step will not fail if the test fails, but it will write the
+        # failure to GITHUB_OUTPUT
+        run: |
+          if go test -v -race ./...; then
+            echo "base_test=1" >> $GITHUB_OUTPUT
+          else
+            echo "base_test=0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Update the osbuild/images reference to the PR HEAD
+        env:
+          pr_head: ${{ github.event.pull_request.hase.sha }}
+        # Restore and clean the checkout and replace the dependency again using
+        # images from the checkout above
+        run: |
+          git restore .
+          git clean -xfd .
           go mod edit -replace github.com/osbuild/images=../images
           ./tools/prepare-source.sh
 
-      - name: Allow replacing the osbuild/images module in .golangci.yml
+      - name: Run unit tests (PR HEAD)
+        id: tests-pr
         working-directory: osbuild-composer
+        # This step will not fail if the test fails, but it will write the
+        # failure to GITHUB_OUTPUT
         run: |
-          awk '/replace-local: false/ {print "    replace-local: true"; next} 1' .golangci.yml > .golangci.yml.new
-          mv .golangci.yml.new .golangci.yml
+          if go test -v -race ./...; then
+            echo "pr_test=1" >> $GITHUB_OUTPUT
+          else
+            echo "pr_test=0" >> $GITHUB_OUTPUT
+          fi
 
-      - name: Apt update
-        run: sudo apt update
+  post-results:
+    permissions:
+      pull-requests: write
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    steps:
+      - name: Create comment
+        id: create-message
+        env:
+          base_test: ${{ needs.unit-tests.outputs.base_test }}
+          pr_test: ${{ needs.unit-tests.outputs.pr_test }}
+        # Create the appropriate comment (if necessary) to post on the PR
+        # See https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/workflow-commands-for-github-actions#multiline-strings
+        run: |
+          if (( base_test == 1 )) && (( pr_test == 0 )); then
+            {
+              echo 'message<<EOF'
+              This PR changes the images API or behaviour. The next update of the images dependency in osbuild-composer will need work to adapt to these changes.
+              This is simply a notice. It will not block this PR from being merged.
+              echo EOF
+            } >> $GITHUB_OUTPUT
 
-      # This is needed to lint internal/upload/koji package
-      - name: Install kerberos devel package
-        run: sudo apt install -y libkrb5-dev
-
-      # This is needed for the container upload dependencies
-      - name: Install libgpgme devel package
-        run: sudo apt install -y libgpgme-dev libbtrfs-dev libdevmapper-dev
-
-      - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v6
+      - name: Add comment
+        uses: mshick/add-pr-comment@v2
+        repo-token: ${{ secrets.SCHUTZBOT_GITHUB_ACCESS_TOKEN }}
+        env:
+          message: ${{ steps.create-message.outputs.message }}
         with:
-          version: v1.54.2
-          working-directory: osbuild-composer
-          args: --verbose --timeout 5m0s
+          issue: ${{ github.event.pull_request.number }}
+          message: ${{ env.message }}
