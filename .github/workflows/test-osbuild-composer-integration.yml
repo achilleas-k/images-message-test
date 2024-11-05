@@ -113,7 +113,8 @@ jobs:
 
       - name: Add comment
         uses: mshick/add-pr-comment@v2
-        repo-token: ${{ secrets.SCHUTZBOT_GITHUB_ACCESS_TOKEN }}
+        # Use default token here
+        # repo-token: ${{ secrets.SCHUTZBOT_GITHUB_ACCESS_TOKEN }}
         env:
           message: ${{ steps.create-message.outputs.message }}
         with:
