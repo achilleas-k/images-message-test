@@ -111,6 +111,7 @@ jobs:
               This is simply a notice. It will not block this PR from being merged.
               echo EOF
             } >> $GITHUB_OUTPUT
+          fi
 
       - name: Add comment
         uses: mshick/add-pr-comment@v2
