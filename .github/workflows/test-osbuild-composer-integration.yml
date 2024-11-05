@@ -107,8 +107,8 @@ jobs:
           if (( base_test == 1 )) && (( pr_test == 0 )); then
             {
               echo 'message<<EOF'
-              This PR changes the images API or behaviour. The next update of the images dependency in osbuild-composer will need work to adapt to these changes.
-              This is simply a notice. It will not block this PR from being merged.
+              echo This PR changes the images API or behaviour. The next update of the images dependency in osbuild-composer will need work to adapt to these changes.
+              echo This is simply a notice. It will not block this PR from being merged.
               echo EOF
             } >> $GITHUB_OUTPUT
           fi
