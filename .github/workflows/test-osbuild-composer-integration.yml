@@ -104,7 +104,7 @@ jobs:
         env:
           pr_head: ${{ github.event.pull_request.hase.sha }}
         # if the base tests failed, there's no need to run the PR HEAD tests
-        if: steps.tests-base.outputs.base_test == 1
+        if: ${{ steps.tests-base.outputs.base_test == 1 }}
         # Restore and clean the checkout and replace the dependency again using
         # images from the checkout above
         run: |
@@ -117,7 +117,7 @@ jobs:
       - name: Run unit tests (PR HEAD)
         id: tests-pr
         working-directory: osbuild-composer
-        if: steps.tests-base.outputs.base_test == 1
+        if: ${{ steps.tests-base.outputs.base_test == 1 }}
         # This step will not fail if the test fails, but it will write the
         # failure to GITHUB_OUTPUT
         run: |
@@ -138,7 +138,7 @@ jobs:
         uses: mshick/add-pr-comment@v2
         # Use default token in this PR
         # repo-token: ${{ secrets.SCHUTZBOT_GITHUB_ACCESS_TOKEN }}
-        if: needs.unit-tests.outputs.bases_test == 1 && needs.unit-tests.outputs.pr_test == 0
+        if: ${{ ( needs.unit-tests.outputs.bases_test == 1 ) && ( needs.unit-tests.outputs.pr_test == 0 ) }}
         with:
           issue: ${{ github.event.pull_request.number }}
           message: |
@@ -149,7 +149,7 @@ jobs:
       - name: Update comment (fixed)
         uses: mshick/add-pr-comment@v2
         # repo-token: ${{ secrets.SCHUTZBOT_GITHUB_ACCESS_TOKEN }}
-        if: needs.unit-tests.outputs.pr_test == 1
+        if: ${{ needs.unit-tests.outputs.pr_test == 1 }}
         with:
           update-only: true  # don't write a message if there isn't one already
           issue: ${{ github.event.pull_request.number }}
