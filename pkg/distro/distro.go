@@ -14,7 +14,7 @@ type BootMode uint64
 
 const (
 	BOOT_NONE BootMode = iota
-	BOOT_LEGACY_
+	BOOT_LEGACY
 	BOOT_UEFI
 	BOOT_HYBRID
 	UnsupportedCustomizationError = "unsupported blueprint customizations found for image type %q: (allowed: %s)"
@@ -25,7 +25,7 @@ func (m BootMode) String() string {
 	switch m {
 	case BOOT_NONE:
 		return "none"
-	case BOOT_LEGACY_:
+	case BOOT_LEGACY:
 		return "legacy"
 	case BOOT_UEFI:
 		return "uefi"
