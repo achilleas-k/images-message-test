@@ -1,6 +1,35 @@
 ---
 name: "osbuild-composer integration"
 
+# PLEASE UPDATE THIS COMMENT IF ANY RELEVANT CHANGES ARE MADE TO THE WORKFLOW
+#
+# This workflow tests if an open PR breaks osbuild-composer's compatibility
+# with images. If it does, it posts a message on the PR itself notifying the
+# author and reviewers of this change. The workflow works as follows:
+#
+# 1. Checks out osbuild/osbuild-composer
+# 2. Replaces the osbuild/images dependency with the *merge base* of the open
+#    PR with main and runs osbuild-composer's unit tests.
+# 3. Replaces the osbuild/images dependency with the *HEAD* of the open PR and
+#    runs osbuild-composer's unit tests.
+# 4. Posts a message on the open PR only if the unit tests on the merge base
+#    (step 2) succeed and the unit tests on the PR HEAD (step 3) fail.
+#
+# Limitations:
+# 1. This workflow runs on pull_request_target, which means it runs on the main
+#    branch. Changes to this workflow in a PR will not affect the run for that
+#    PR. Running on pull_request_target is needed to have access to repository
+#    secrets (Schutzbot's GitHub token).
+# 2. If the unit tests in this repository fail, the integration will fail and
+#    the message will be posted (if the integration is not failing on the merge
+#    base). This will happen even if there's no actual integration issue, so
+#    the message can be misleading.
+# 3. If a PR causes integration issues at first and is then fixed, the message
+#    wont be removed. The message could be updated, using the
+#    mshick/add-pr-comment@v2 action, but that would also mean that a comment
+#    is posted even when everything is working, which might be annoying.
+
+
 on:  # yamllint disable-line rule:truthy
   pull_request_target:
     branches:
@@ -18,8 +47,8 @@ jobs:
     outputs:
       # Define job outputs
       # (see https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/passing-information-between-jobs#example-defining-outputs-for-a-job)
-      # Define one output for the test with the merge base and one for the test
-      # agains the PR
+      # One output for the test with the merge base and one for the test against
+      # the PR
       base_test: ${{ steps.tests-base.outputs.base_test }}
       pr_test: ${{ steps.tests-pr.outputs.pr_test }}
 
@@ -69,6 +98,7 @@ jobs:
       - name: Update the osbuild/images reference to the PR HEAD
         env:
           pr_head: ${{ github.event.pull_request.hase.sha }}
+        if: steps.tests-base.outputs.base_test == 1
         # Restore and clean the checkout and replace the dependency again using
         # images from the checkout above
         run: |
@@ -91,7 +121,7 @@ jobs:
           fi
 
   post-results:
-    name: "Post breakage notice"
+    name: "Post notice"
     permissions:
       pull-requests: write
     runs-on: ubuntu-latest
@@ -116,7 +146,7 @@ jobs:
 
       - name: Add comment
         uses: mshick/add-pr-comment@v2
-        # Use default token here
+        # Use default token in this PR
         # repo-token: ${{ secrets.SCHUTZBOT_GITHUB_ACCESS_TOKEN }}
         if: steps.create-message.outputs.message != ''
         env:
