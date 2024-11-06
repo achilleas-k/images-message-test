@@ -98,6 +98,7 @@ jobs:
       - name: Update the osbuild/images reference to the PR HEAD
         env:
           pr_head: ${{ github.event.pull_request.hase.sha }}
+        # if the base tests failed, there's no need to run the PR HEAD tests
         if: steps.tests-base.outputs.base_test == 1
         # Restore and clean the checkout and replace the dependency again using
         # images from the checkout above
@@ -111,6 +112,7 @@ jobs:
       - name: Run unit tests (PR HEAD)
         id: tests-pr
         working-directory: osbuild-composer
+        if: steps.tests-base.outputs.base_test == 1
         # This step will not fail if the test fails, but it will write the
         # failure to GITHUB_OUTPUT
         run: |
@@ -127,30 +129,24 @@ jobs:
     runs-on: ubuntu-latest
     needs: unit-tests
     steps:
-      - name: Create comment
-        id: create-message
-        env:
-          base_test: ${{ needs.unit-tests.outputs.base_test }}
-          pr_test: ${{ needs.unit-tests.outputs.pr_test }}
-        # Create the appropriate comment (if necessary) to post on the PR
-        # See https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/workflow-commands-for-github-actions#multiline-strings
-        run: |
-          if (( base_test == 1 )) && (( pr_test == 0 )); then
-            {
-              echo 'message<<EOF'
-              echo This PR changes the images API or behaviour. The next update of the images dependency in osbuild-composer will need work to adapt to these changes.
-              echo This is simply a notice. It will not block this PR from being merged.
-              echo EOF
-            } >> $GITHUB_OUTPUT
-          fi
-
-      - name: Add comment
+      - name: Add comment (breakage)
         uses: mshick/add-pr-comment@v2
         # Use default token in this PR
         # repo-token: ${{ secrets.SCHUTZBOT_GITHUB_ACCESS_TOKEN }}
-        if: steps.create-message.outputs.message != ''
-        env:
-          message: ${{ steps.create-message.outputs.message }}
+        if: needs.unit-tests.outputs.bases_test == 1 && needs.unit-tests.outputs.pr_test == 0
         with:
           issue: ${{ github.event.pull_request.number }}
-          message: ${{ env.message }}
+          message: |
+            This PR changes the images API or behaviour. The next update of the images dependency in osbuild-composer will need work to adapt to these changes.
+            This is simply a notice. It will not block this PR from being merged.
+
+      - name: Update comment (fixed)
+        uses: mshick/add-pr-comment@v2
+        # Use default token in this PR
+        # repo-token: ${{ secrets.SCHUTZBOT_GITHUB_ACCESS_TOKEN }}
+        if: needs.unit-tests.outputs.pr_test == 1
+        with:
+          update-only: true  # don't write a message if there isn't one already
+          issue: ${{ github.event.pull_request.number }}
+          message: |
+            Fixed!
