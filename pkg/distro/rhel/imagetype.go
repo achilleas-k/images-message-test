@@ -174,7 +174,7 @@ func (t *ImageType) BootMode() distro.BootMode {
 	} else if t.platform.GetUEFIVendor() != "" {
 		return distro.BOOT_UEFI
 	} else if t.platform.GetBIOSPlatform() != "" || t.platform.GetZiplSupport() {
-		return distro.BOOT_LEGACY
+		return distro.BOOT_LEGACY_
 	}
 	return distro.BOOT_NONE
 }
