@@ -77,14 +77,21 @@ jobs:
           path: images
           ref: ${{ github.event.pull_request.head.sha }}
 
+      - name: Get PR merge base commit ID
+        id: merge-base
+        working-directory: images
+        run: |
+          merge_base_sha=$(git merge-base HEAD main)
+          echo "merge_base_sha=$merge_base_sha" >> $GITHUB_OUTPUT
+
       - name: Mark the working directory as safe for git
         run: git config --global --add safe.directory "$(pwd)"
 
       - name: Update the osbuild/images reference to the merge base with main
         env:
-          merge_base_sha: ${{ github.event.pull_request.base.sha }}
+          merge_base_sha: ${{ steps.merge-base.outputs.merge_base }}
+        working-directory: osbuild-composer
         run: |
-          cd osbuild-composer
           go mod edit -replace github.com/osbuild/images=github.com/achilleas-k/images-message-test@$merge_base_sha
           ./tools/prepare-source.sh
 
@@ -107,8 +114,8 @@ jobs:
         if: steps.tests-base.outputs.base_test == 1
         # Restore and clean the checkout and replace the dependency again using
         # images from the checkout above
+        working-directory: osbuild-composer
         run: |
-          cd osbuild-composer
           git restore .
           git clean -xfd .
           go mod edit -replace github.com/osbuild/images=../images
