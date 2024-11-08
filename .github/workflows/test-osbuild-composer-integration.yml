@@ -79,9 +79,11 @@ jobs:
 
       - name: Get PR merge base commit ID
         id: merge-base
+        env:
+          base_sha: ${{ github.event.pull_request.base.sha }}
         working-directory: images
         run: |
-          merge_base_sha=$(git merge-base HEAD main)
+          merge_base_sha=$(git merge-base HEAD $base_sha)
           echo "merge_base_sha=$merge_base_sha" >> $GITHUB_OUTPUT
 
       - name: Mark the working directory as safe for git
