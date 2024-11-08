@@ -1,5 +1,4 @@
-Images
-======
+# Images
 
 This repository is, primarily, a Go library for generating osbuild manifests
 ([more details here](./docs/developer/code-manifest-generation.md)).
