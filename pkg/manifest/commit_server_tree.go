@@ -19,12 +19,12 @@ type OSTreeCommitServer struct {
 	// pipeline.
 	ExtraPackages []string
 	// Extra repositories to install packages from
-	ExtraRepos []rpmmd.RepoConfig
+	ExtraRepos []rpmmd.RepoConfig_
 	// TODO: should this be configurable?
 	Language string
 
 	platform        platform.Platform
-	repos           []rpmmd.RepoConfig
+	repos           []rpmmd.RepoConfig_
 	packageSpecs    []rpmmd.PackageSpec
 	commitPipeline  *OSTreeCommit
 	nginxConfigPath string
@@ -38,7 +38,7 @@ type OSTreeCommitServer struct {
 // nginx will be listening on.
 func NewOSTreeCommitServer(buildPipeline Build,
 	platform platform.Platform,
-	repos []rpmmd.RepoConfig,
+	repos []rpmmd.RepoConfig_,
 	commitPipeline *OSTreeCommit,
 	nginxConfigPath,
 	listenPort string) *OSTreeCommitServer {
@@ -80,7 +80,7 @@ func (p *OSTreeCommitServer) getPackageSpecs() []rpmmd.PackageSpec {
 	return p.packageSpecs
 }
 
-func (p *OSTreeCommitServer) serializeStart(packages []rpmmd.PackageSpec, _ []container.Spec, _ []ostree.CommitSpec, rpmRepos []rpmmd.RepoConfig) {
+func (p *OSTreeCommitServer) serializeStart(packages []rpmmd.PackageSpec, _ []container.Spec, _ []ostree.CommitSpec, rpmRepos []rpmmd.RepoConfig_) {
 	if len(p.packageSpecs) > 0 {
 		panic("double call to serializeStart()")
 	}

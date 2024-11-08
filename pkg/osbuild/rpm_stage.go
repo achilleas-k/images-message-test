@@ -139,7 +139,7 @@ func pkgRefs(specs []rpmmd.PackageSpec) FilesInputRef {
 	return NewFilesInputSourceArrayRef(refs)
 }
 
-func NewRPMStageOptions(repos []rpmmd.RepoConfig) *RPMStageOptions {
+func NewRPMStageOptions(repos []rpmmd.RepoConfig_) *RPMStageOptions {
 	gpgKeys := make([]string, 0)
 	keyMap := make(map[string]bool) // for deduplicating keys
 	for _, repo := range repos {

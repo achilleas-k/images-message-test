@@ -19,7 +19,7 @@ import (
 
 // NewTestOS returns a minimally populated OS struct for use in testing
 func NewTestOS() *OS {
-	repos := []rpmmd.RepoConfig{}
+	repos := []rpmmd.RepoConfig_{}
 	manifest := New()
 	runner := &runner.Fedora{Version: 38}
 	build := NewBuild(&manifest, runner, repos, nil)

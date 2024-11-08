@@ -39,7 +39,7 @@ type AnacondaInstaller struct {
 	ExcludePackages []string
 
 	// Extra repositories to install packages from
-	ExtraRepos []rpmmd.RepoConfig
+	ExtraRepos []rpmmd.RepoConfig_
 
 	// Biosdevname indicates whether or not biosdevname should be used to
 	// name network devices when booting the installer. This may affect
@@ -50,7 +50,7 @@ type AnacondaInstaller struct {
 	Variant string
 
 	platform     platform.Platform
-	repos        []rpmmd.RepoConfig
+	repos        []rpmmd.RepoConfig_
 	packageSpecs []rpmmd.PackageSpec
 	kernelName   string
 	kernelVer    string
@@ -94,7 +94,7 @@ type AnacondaInstaller struct {
 func NewAnacondaInstaller(installerType AnacondaInstallerType,
 	buildPipeline Build,
 	platform platform.Platform,
-	repos []rpmmd.RepoConfig,
+	repos []rpmmd.RepoConfig_,
 	kernelName,
 	product,
 	version string,
@@ -196,7 +196,7 @@ func (p *AnacondaInstaller) getPackageSpecs() []rpmmd.PackageSpec {
 	return p.packageSpecs
 }
 
-func (p *AnacondaInstaller) serializeStart(packages []rpmmd.PackageSpec, _ []container.Spec, _ []ostree.CommitSpec, rpmRepos []rpmmd.RepoConfig) {
+func (p *AnacondaInstaller) serializeStart(packages []rpmmd.PackageSpec, _ []container.Spec, _ []ostree.CommitSpec, rpmRepos []rpmmd.RepoConfig_) {
 	if len(p.packageSpecs) > 0 {
 		panic("double call to serializeStart()")
 	}

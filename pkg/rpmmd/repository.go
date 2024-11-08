@@ -28,7 +28,7 @@ type repository struct {
 	PackageSets    []string `json:"package_sets,omitempty"`
 }
 
-type RepoConfig struct {
+type RepoConfig_ struct {
 	// the repo id is not always required and is ignored in some cases.
 	// For example, it is not required in dnf-json, but it is a required
 	// field for creating a repo file in `/etc/yum.repos.d/`
@@ -59,7 +59,7 @@ type RepoConfig struct {
 // Hash calculates an ID string that uniquely represents a repository
 // configuration.  The Name and ImageTypeTags fields are not considered in the
 // calculation.
-func (r *RepoConfig) Hash() string {
+func (r *RepoConfig_) Hash() string {
 	bts := func(b bool) string {
 		return fmt.Sprintf("%T", b)
 	}
@@ -87,7 +87,7 @@ func (r *RepoConfig) Hash() string {
 		r.SSLClientCert)))
 }
 
-type DistrosRepoConfigs map[string]map[string][]RepoConfig
+type DistrosRepoConfigs map[string]map[string][]RepoConfig_
 
 type PackageList []Package
 
@@ -140,7 +140,7 @@ func (pkg Package) ToPackageInfo() PackageInfo {
 type PackageSet struct {
 	Include         []string
 	Exclude         []string
-	Repositories    []RepoConfig
+	Repositories    []RepoConfig_
 	InstallWeakDeps bool
 }
 
@@ -225,7 +225,7 @@ func GetVerStrFromPackageSpecListPanic(pkgs []PackageSpec, packageName string) s
 	return pkgVerStr
 }
 
-func LoadRepositoriesFromFile(filename string) (map[string][]RepoConfig, error) {
+func LoadRepositoriesFromFile(filename string) (map[string][]RepoConfig_, error) {
 	f, err := os.Open(filename)
 	if err != nil {
 		return nil, err
@@ -233,7 +233,7 @@ func LoadRepositoriesFromFile(filename string) (map[string][]RepoConfig, error) 
 	defer f.Close()
 
 	var reposMap map[string][]repository
-	repoConfigs := make(map[string][]RepoConfig)
+	repoConfigs := make(map[string][]RepoConfig_)
 
 	err = json.NewDecoder(f).Decode(&reposMap)
 	if err != nil {
@@ -254,7 +254,7 @@ func LoadRepositoriesFromFile(filename string) (map[string][]RepoConfig, error) 
 			if len(repo.GPGKeys) > 0 {
 				keys = append(keys, repo.GPGKeys...)
 			}
-			config := RepoConfig{
+			config := RepoConfig_{
 				Name:           repo.Name,
 				BaseURLs:       urls,
 				Metalink:       repo.Metalink,

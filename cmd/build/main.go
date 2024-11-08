@@ -30,7 +30,7 @@ func makeManifest(
 	config *buildconfig.BuildConfig,
 	imgType distro.ImageType,
 	distribution distro.Distro,
-	repos []rpmmd.RepoConfig,
+	repos []rpmmd.RepoConfig_,
 	archName string,
 	cacheRoot string,
 ) (manifest.OSBuildManifest, error) {
@@ -129,10 +129,10 @@ func resolvePipelineCommits(commitSources map[string][]ostree.SourceSpec) (map[s
 	return commits, nil
 }
 
-func depsolve(cacheDir string, packageSets map[string][]rpmmd.PackageSet, d distro.Distro, arch string) (map[string][]rpmmd.PackageSpec, map[string][]rpmmd.RepoConfig, error) {
+func depsolve(cacheDir string, packageSets map[string][]rpmmd.PackageSet, d distro.Distro, arch string) (map[string][]rpmmd.PackageSpec, map[string][]rpmmd.RepoConfig_, error) {
 	solver := dnfjson.NewSolver(d.ModulePlatformID(), d.Releasever(), arch, d.Name(), cacheDir)
 	depsolvedSets := make(map[string][]rpmmd.PackageSpec)
-	repoSets := make(map[string][]rpmmd.RepoConfig)
+	repoSets := make(map[string][]rpmmd.RepoConfig_)
 	for name, pkgSet := range packageSets {
 		res, err := solver.Depsolve(pkgSet, sbom.StandardTypeNone)
 		if err != nil {
@@ -165,8 +165,8 @@ func u(s string) string {
 	return strings.Replace(s, "-", "_", -1)
 }
 
-func filterRepos(repos []rpmmd.RepoConfig, typeName string) []rpmmd.RepoConfig {
-	filtered := make([]rpmmd.RepoConfig, 0)
+func filterRepos(repos []rpmmd.RepoConfig_, typeName string) []rpmmd.RepoConfig_ {
+	filtered := make([]rpmmd.RepoConfig_, 0)
 	for _, repo := range repos {
 		if len(repo.ImageTypeTags) == 0 {
 			filtered = append(filtered, repo)

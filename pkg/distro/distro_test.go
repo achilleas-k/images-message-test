@@ -69,7 +69,7 @@ func TestImageTypePipelineNames(t *testing.T) {
 					options := distro.ImageOptions{}
 					// this repo's gpg keys should get included in the os
 					// pipeline's rpm stage
-					repos := []rpmmd.RepoConfig{
+					repos := []rpmmd.RepoConfig_{
 						{
 							Name:        "payload",
 							BaseURLs:    []string{"http://payload.example.com"},
@@ -96,7 +96,7 @@ func TestImageTypePipelineNames(t *testing.T) {
 					}
 
 					packageSets := make(map[string][]rpmmd.PackageSpec, len(allPipelines))
-					repoSets := make(map[string][]rpmmd.RepoConfig, len(allPipelines))
+					repoSets := make(map[string][]rpmmd.RepoConfig_, len(allPipelines))
 					for _, plName := range allPipelines {
 						packageSets[plName] = minimalPackageSet
 						repoSets[plName] = repos
@@ -174,7 +174,7 @@ func TestPipelineRepositories(t *testing.T) {
 
 	type testCase struct {
 		// Repo configs for pipeline generator
-		repos []rpmmd.RepoConfig
+		repos []rpmmd.RepoConfig_
 
 		// Expected result: map of pipelines to repo names (we only check names for the test).
 		// Use the pipeline name * for global repos.
@@ -183,7 +183,7 @@ func TestPipelineRepositories(t *testing.T) {
 
 	testCases := map[string]testCase{
 		"globalonly": { // only global repos: most common scenario
-			repos: []rpmmd.RepoConfig{
+			repos: []rpmmd.RepoConfig_{
 				{
 					Name:     "global-1",
 					BaseURLs: []string{"http://global-1.example.com"},
@@ -198,7 +198,7 @@ func TestPipelineRepositories(t *testing.T) {
 			},
 		},
 		"global+build": { // global repos with build-specific repos: secondary common scenario
-			repos: []rpmmd.RepoConfig{
+			repos: []rpmmd.RepoConfig_{
 				{
 					Name:     "global-11",
 					BaseURLs: []string{"http://global-11.example.com"},
@@ -224,7 +224,7 @@ func TestPipelineRepositories(t *testing.T) {
 			},
 		},
 		"global+os": { // global repos with os-specific repos
-			repos: []rpmmd.RepoConfig{
+			repos: []rpmmd.RepoConfig_{
 				{
 					Name:     "global-21",
 					BaseURLs: []string{"http://global-11.example.com"},
@@ -250,7 +250,7 @@ func TestPipelineRepositories(t *testing.T) {
 			},
 		},
 		"global+os+payload": { // global repos with os-specific repos and (user-defined) payload repositories
-			repos: []rpmmd.RepoConfig{
+			repos: []rpmmd.RepoConfig_{
 				{
 					Name:     "global-21",
 					BaseURLs: []string{"http://global-11.example.com"},
@@ -286,7 +286,7 @@ func TestPipelineRepositories(t *testing.T) {
 			},
 		},
 		"noglobal": { // no global repositories; only pipeline restricted ones (unrealistic but technically valid)
-			repos: []rpmmd.RepoConfig{
+			repos: []rpmmd.RepoConfig_{
 				{
 					Name:        "build-1",
 					BaseURLs:    []string{"http://build-1.example.com"},
@@ -333,7 +333,7 @@ func TestPipelineRepositories(t *testing.T) {
 			},
 		},
 		"global+unknown": { // package set names that don't match a pipeline are ignored
-			repos: []rpmmd.RepoConfig{
+			repos: []rpmmd.RepoConfig_{
 				{
 					Name:     "global-1",
 					BaseURLs: []string{"http://global-1.example.com"},
@@ -353,7 +353,7 @@ func TestPipelineRepositories(t *testing.T) {
 			},
 		},
 		"none": { // empty
-			repos:  []rpmmd.RepoConfig{},
+			repos:  []rpmmd.RepoConfig_{},
 			result: map[string][]stringSet{},
 		},
 	}

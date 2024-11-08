@@ -138,7 +138,7 @@ func (m Manifest) GetOSTreeSourceSpecs() map[string][]ostree.SourceSpec {
 	return ostreeSpecs
 }
 
-func (m Manifest) Serialize(packageSets map[string][]rpmmd.PackageSpec, containerSpecs map[string][]container.Spec, ostreeCommits map[string][]ostree.CommitSpec, rpmRepos map[string][]rpmmd.RepoConfig) (OSBuildManifest, error) {
+func (m Manifest) Serialize(packageSets map[string][]rpmmd.PackageSpec, containerSpecs map[string][]container.Spec, ostreeCommits map[string][]ostree.CommitSpec, rpmRepos map[string][]rpmmd.RepoConfig_) (OSBuildManifest, error) {
 	pipelines := make([]osbuild.Pipeline, 0)
 	packages := make([]rpmmd.PackageSpec, 0)
 	commits := make([]ostree.CommitSpec, 0)
@@ -195,8 +195,8 @@ func (m Manifest) GetExports() []string {
 // filterRepos returns a list of repositories that specify the given pipeline
 // name in their PackageSets list in addition to any global repositories
 // (global repositories are ones that do not specify any PackageSets).
-func filterRepos(repos []rpmmd.RepoConfig, plName string) []rpmmd.RepoConfig {
-	filtered := make([]rpmmd.RepoConfig, 0, len(repos))
+func filterRepos(repos []rpmmd.RepoConfig_, plName string) []rpmmd.RepoConfig_ {
+	filtered := make([]rpmmd.RepoConfig_, 0, len(repos))
 	for _, repo := range repos {
 		if len(repo.PackageSets) == 0 {
 			filtered = append(filtered, repo)

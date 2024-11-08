@@ -12,12 +12,12 @@ import (
 
 type testRepoServer struct {
 	Server     *httptest.Server
-	RepoConfig rpmmd.RepoConfig
+	RepoConfig rpmmd.RepoConfig_
 }
 
 func NewTestServer() *testRepoServer {
 	server := httptest.NewServer(http.FileServer(http.Dir("../../test/data/testrepo/")))
-	testrepo := rpmmd.RepoConfig{
+	testrepo := rpmmd.RepoConfig_{
 		Name:      "cs9-baseos",
 		BaseURLs:  []string{server.URL},
 		CheckGPG:  common.ToPtr(false),

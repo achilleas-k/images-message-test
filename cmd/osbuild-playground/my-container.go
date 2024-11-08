@@ -40,7 +40,7 @@ func init() {
 // went wrong. Your manifest will be streamed to osbuild
 // for building.
 func (img *MyContainer) InstantiateManifest(m *manifest.Manifest,
-	repos []rpmmd.RepoConfig,
+	repos []rpmmd.RepoConfig_,
 	runner runner.Runner,
 	rng *rand.Rand) (*artifact.Artifact, error) {
 	// Let's create a simple OCI container!

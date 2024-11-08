@@ -31,7 +31,7 @@ type BuildrootFromPackages struct {
 
 	runner       runner.Runner
 	dependents   []Pipeline
-	repos        []rpmmd.RepoConfig
+	repos        []rpmmd.RepoConfig_
 	packageSpecs []rpmmd.PackageSpec
 
 	containerBuildable bool
@@ -45,7 +45,7 @@ type BuildOptions struct {
 
 // NewBuild creates a new build pipeline from the repositories in repos
 // and the specified packages.
-func NewBuild(m *Manifest, runner runner.Runner, repos []rpmmd.RepoConfig, opts *BuildOptions) Build {
+func NewBuild(m *Manifest, runner runner.Runner, repos []rpmmd.RepoConfig_, opts *BuildOptions) Build {
 	if opts == nil {
 		opts = &BuildOptions{}
 	}
@@ -99,7 +99,7 @@ func (p *BuildrootFromPackages) getPackageSpecs() []rpmmd.PackageSpec {
 	return p.packageSpecs
 }
 
-func (p *BuildrootFromPackages) serializeStart(packages []rpmmd.PackageSpec, _ []container.Spec, _ []ostree.CommitSpec, rpmRepos []rpmmd.RepoConfig) {
+func (p *BuildrootFromPackages) serializeStart(packages []rpmmd.PackageSpec, _ []container.Spec, _ []ostree.CommitSpec, rpmRepos []rpmmd.RepoConfig_) {
 	if len(p.packageSpecs) > 0 {
 		panic("double call to serializeStart()")
 	}
@@ -199,7 +199,7 @@ func (p *BuildrootFromContainer) getContainerSpecs() []container.Spec {
 	return p.containerSpecs
 }
 
-func (p *BuildrootFromContainer) serializeStart(_ []rpmmd.PackageSpec, containerSpecs []container.Spec, _ []ostree.CommitSpec, _ []rpmmd.RepoConfig) {
+func (p *BuildrootFromContainer) serializeStart(_ []rpmmd.PackageSpec, containerSpecs []container.Spec, _ []ostree.CommitSpec, _ []rpmmd.RepoConfig_) {
 	if len(p.containerSpecs) > 0 {
 		panic("double call to serializeStart()")
 	}

@@ -52,7 +52,7 @@ func TestPackageSpecGetNEVRA(t *testing.T) {
 }
 
 func TestRepoConfigMarshalEmpty(t *testing.T) {
-	repoCfg := &RepoConfig{}
+	repoCfg := &RepoConfig_{}
 	js, _ := json.Marshal(repoCfg)
 	assert.Equal(t, string(js), `{}`)
 }

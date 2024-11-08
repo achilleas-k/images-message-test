@@ -49,8 +49,8 @@ func NewFromDistrosRepoConfigs(distrosRepoConfigs rpmmd.DistrosRepoConfigs) *Rep
 // if the given image type name is actually part of the architecture definition of the provided name.
 // Therefore in general, all common distro-arch-specific repositories are returned for any image type name,
 // even for non-existing ones.
-func (r *RepoRegistry) ReposByImageTypeName(distro, arch, imageType string) ([]rpmmd.RepoConfig, error) {
-	repositories := []rpmmd.RepoConfig{}
+func (r *RepoRegistry) ReposByImageTypeName(distro, arch, imageType string) ([]rpmmd.RepoConfig_, error) {
+	repositories := []rpmmd.RepoConfig_{}
 
 	archRepos, err := r.ReposByArchName(distro, arch, true)
 	if err != nil {
@@ -82,8 +82,8 @@ func (r *RepoRegistry) ReposByImageTypeName(distro, arch, imageType string) ([]r
 // slice or not.
 //
 // The method does not verify if the given architecture name is actually part of the specific distribution definition.
-func (r *RepoRegistry) ReposByArchName(distro, arch string, includeTagged bool) ([]rpmmd.RepoConfig, error) {
-	repositories := []rpmmd.RepoConfig{}
+func (r *RepoRegistry) ReposByArchName(distro, arch string, includeTagged bool) ([]rpmmd.RepoConfig_, error) {
+	repositories := []rpmmd.RepoConfig_{}
 
 	archRepos, err := r.DistroHasRepos(distro, arch)
 	if err != nil {
@@ -103,7 +103,7 @@ func (r *RepoRegistry) ReposByArchName(distro, arch string, includeTagged bool) 
 }
 
 // DistroHasRepos returns the repositories for the distro+arch, and a found flag
-func (r *RepoRegistry) DistroHasRepos(distro, arch string) ([]rpmmd.RepoConfig, error) {
+func (r *RepoRegistry) DistroHasRepos(distro, arch string) ([]rpmmd.RepoConfig_, error) {
 	// compatibility layer to support old repository definition filenames
 	// without a dot to separate major and minor release versions
 	stdDistroName, err := distroidparser.DefaultParser.Standardize(distro)

@@ -159,7 +159,7 @@ type Solver struct {
 // DepsolveResult contains the results of a depsolve operation.
 type DepsolveResult struct {
 	Packages []rpmmd.PackageSpec
-	Repos    []rpmmd.RepoConfig
+	Repos    []rpmmd.RepoConfig_
 	SBOM     *sbom.Document
 }
 
@@ -249,7 +249,7 @@ func (s *Solver) Depsolve(pkgSets []rpmmd.PackageSet, sbomType sbom.StandardType
 
 // FetchMetadata returns the list of all the available packages in repos and
 // their info.
-func (s *Solver) FetchMetadata(repos []rpmmd.RepoConfig) (rpmmd.PackageList, error) {
+func (s *Solver) FetchMetadata(repos []rpmmd.RepoConfig_) (rpmmd.PackageList, error) {
 	req, err := s.makeDumpRequest(repos)
 	if err != nil {
 		return nil, err
@@ -295,7 +295,7 @@ func (s *Solver) FetchMetadata(repos []rpmmd.RepoConfig) (rpmmd.PackageList, err
 }
 
 // SearchMetadata searches for packages and returns a list of the info for matches.
-func (s *Solver) SearchMetadata(repos []rpmmd.RepoConfig, packages []string) (rpmmd.PackageList, error) {
+func (s *Solver) SearchMetadata(repos []rpmmd.RepoConfig_, packages []string) (rpmmd.PackageList, error) {
 	req, err := s.makeSearchRequest(repos, packages)
 	if err != nil {
 		return nil, err
@@ -340,7 +340,7 @@ func (s *Solver) SearchMetadata(repos []rpmmd.RepoConfig, packages []string) (rp
 	return pkgs, nil
 }
 
-func (s *Solver) reposFromRPMMD(rpmRepos []rpmmd.RepoConfig) ([]repoConfig, error) {
+func (s *Solver) reposFromRPMMD(rpmRepos []rpmmd.RepoConfig_) ([]repoConfig, error) {
 	dnfRepos := make([]repoConfig, len(rpmRepos))
 	for idx, rr := range rpmRepos {
 		dr := repoConfig{
@@ -436,7 +436,7 @@ func (s *Solver) makeDepsolveRequest(pkgSets []rpmmd.PackageSet, sbomType sbom.S
 	// dedupe repository configurations but maintain order
 	// the order in which repositories are added to the request affects the
 	// order of the dependencies in the result
-	repos := make([]rpmmd.RepoConfig, 0)
+	repos := make([]rpmmd.RepoConfig_, 0)
 	rhsmMap := make(map[string]bool)
 
 	for _, ps := range pkgSets {
@@ -521,7 +521,7 @@ func (s *Solver) optionalMetadataForDistro() []string {
 }
 
 // Helper function for creating a dump request payload
-func (s *Solver) makeDumpRequest(repos []rpmmd.RepoConfig) (*Request, error) {
+func (s *Solver) makeDumpRequest(repos []rpmmd.RepoConfig_) (*Request, error) {
 	dnfRepos, err := s.reposFromRPMMD(repos)
 	if err != nil {
 		return nil, err
@@ -541,7 +541,7 @@ func (s *Solver) makeDumpRequest(repos []rpmmd.RepoConfig) (*Request, error) {
 }
 
 // Helper function for creating a search request payload
-func (s *Solver) makeSearchRequest(repos []rpmmd.RepoConfig, packages []string) (*Request, error) {
+func (s *Solver) makeSearchRequest(repos []rpmmd.RepoConfig_, packages []string) (*Request, error) {
 	dnfRepos, err := s.reposFromRPMMD(repos)
 	if err != nil {
 		return nil, err
@@ -566,7 +566,7 @@ func (s *Solver) makeSearchRequest(repos []rpmmd.RepoConfig, packages []string) 
 // convert internal a list of PackageSpecs and map of repoConfig to the rpmmd
 // equivalents and attach key and subscription information based on the
 // repository configs.
-func (result depsolveResult) toRPMMD(rhsm map[string]bool) ([]rpmmd.PackageSpec, []rpmmd.RepoConfig) {
+func (result depsolveResult) toRPMMD(rhsm map[string]bool) ([]rpmmd.PackageSpec, []rpmmd.RepoConfig_) {
 	pkgs := result.Packages
 	repos := result.Repos
 	rpmDependencies := make([]rpmmd.PackageSpec, len(pkgs))
@@ -597,14 +597,14 @@ func (result depsolveResult) toRPMMD(rhsm map[string]bool) ([]rpmmd.PackageSpec,
 		}
 	}
 
-	repoConfigs := make([]rpmmd.RepoConfig, 0, len(repos))
+	repoConfigs := make([]rpmmd.RepoConfig_, 0, len(repos))
 	for repoID := range repos {
 		repo := repos[repoID]
 		var ignoreSSL bool
 		if sslVerify := repo.SSLVerify; sslVerify != nil {
 			ignoreSSL = !*sslVerify
 		}
-		repoConfigs = append(repoConfigs, rpmmd.RepoConfig{
+		repoConfigs = append(repoConfigs, rpmmd.RepoConfig_{
 			Id:             repo.ID,
 			Name:           repo.Name,
 			BaseURLs:       repo.BaseURLs,

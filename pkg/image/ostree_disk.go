@@ -91,7 +91,7 @@ func baseRawOstreeImage(img *OSTreeDiskImage, buildPipeline manifest.Build, opts
 var manifestNewBuild = manifest.NewBuild
 
 func (img *OSTreeDiskImage) InstantiateManifest(m *manifest.Manifest,
-	repos []rpmmd.RepoConfig,
+	repos []rpmmd.RepoConfig_,
 	runner runner.Runner,
 	rng *rand.Rand) (*artifact.Artifact, error) {
 	buildPipeline := manifestNewBuild(m, runner, repos, &manifest.BuildOptions{ContainerBuildable: img.ContainerBuildable})

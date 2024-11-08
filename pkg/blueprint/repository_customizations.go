@@ -76,12 +76,12 @@ func (rc *RepositoryCustomization) getFilename() string {
 	return rc.Filename
 }
 
-func RepoCustomizationsToRepoConfigAndGPGKeyFiles(repos []RepositoryCustomization) (map[string][]rpmmd.RepoConfig, []*fsnode.File, error) {
+func RepoCustomizationsToRepoConfigAndGPGKeyFiles(repos []RepositoryCustomization) (map[string][]rpmmd.RepoConfig_, []*fsnode.File, error) {
 	if len(repos) == 0 {
 		return nil, nil, nil
 	}
 
-	repoMap := make(map[string][]rpmmd.RepoConfig, len(repos))
+	repoMap := make(map[string][]rpmmd.RepoConfig_, len(repos))
 	var gpgKeyFiles []*fsnode.File
 	for _, repo := range repos {
 		filename := repo.getFilename()
@@ -110,14 +110,14 @@ func RepoCustomizationsToRepoConfigAndGPGKeyFiles(repos []RepositoryCustomizatio
 	return repoMap, gpgKeyFiles, nil
 }
 
-func (repo RepositoryCustomization) customRepoToRepoConfig() rpmmd.RepoConfig {
+func (repo RepositoryCustomization) customRepoToRepoConfig() rpmmd.RepoConfig_ {
 	urls := make([]string, len(repo.BaseURLs))
 	copy(urls, repo.BaseURLs)
 
 	keys := make([]string, len(repo.GPGKeys))
 	copy(keys, repo.GPGKeys)
 
-	repoConfig := rpmmd.RepoConfig{
+	repoConfig := rpmmd.RepoConfig_{
 		Id:             repo.Id,
 		BaseURLs:       urls,
 		GPGKeys:        keys,

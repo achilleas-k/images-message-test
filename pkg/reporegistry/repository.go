@@ -76,8 +76,8 @@ func LoadAllRepositories(confPaths []string) (rpmmd.DistrosRepoConfigs, error) {
 // If there are duplicate distro repositories definitions found in multiple paths, the first
 // encounter is preferred. For this reason, the order of paths in the passed list should
 // reflect the desired preference.
-func LoadRepositories(confPaths []string, distro string) (map[string][]rpmmd.RepoConfig, error) {
-	var repoConfigs map[string][]rpmmd.RepoConfig
+func LoadRepositories(confPaths []string, distro string) (map[string][]rpmmd.RepoConfig_, error) {
+	var repoConfigs map[string][]rpmmd.RepoConfig_
 	path := "/repositories/" + distro + ".json"
 
 	for _, confPath := range confPaths {

@@ -32,7 +32,7 @@ func TestDepsolver(t *testing.T) {
 
 	type testCase struct {
 		packages [][]string
-		repos    []rpmmd.RepoConfig
+		repos    []rpmmd.RepoConfig_
 		rootDir  string
 		sbomType sbom.StandardType
 		err      bool
@@ -50,30 +50,30 @@ func TestDepsolver(t *testing.T) {
 	testCases := map[string]testCase{
 		"flat": {
 			packages: [][]string{{"kernel", "vim-minimal", "tmux", "zsh"}},
-			repos:    []rpmmd.RepoConfig{s.RepoConfig},
+			repos:    []rpmmd.RepoConfig_{s.RepoConfig},
 			err:      false,
 		},
 		"chain": {
 			// chain depsolve of the same packages in order should produce the same result (at least in this case)
 			packages: [][]string{{"kernel"}, {"vim-minimal", "tmux", "zsh"}},
-			repos:    []rpmmd.RepoConfig{s.RepoConfig},
+			repos:    []rpmmd.RepoConfig_{s.RepoConfig},
 			err:      false,
 		},
 		"bad-flat": {
 			packages: [][]string{{"this-package-does-not-exist"}},
-			repos:    []rpmmd.RepoConfig{s.RepoConfig},
+			repos:    []rpmmd.RepoConfig_{s.RepoConfig},
 			err:      true,
 			expMsg:   "this-package-does-not-exist",
 		},
 		"bad-chain": {
 			packages: [][]string{{"kernel"}, {"this-package-does-not-exist"}},
-			repos:    []rpmmd.RepoConfig{s.RepoConfig},
+			repos:    []rpmmd.RepoConfig_{s.RepoConfig},
 			err:      true,
 			expMsg:   "this-package-does-not-exist",
 		},
 		"bad-chain-part-deux": {
 			packages: [][]string{{"this-package-does-not-exist"}, {"vim-minimal", "tmux", "zsh"}},
-			repos:    []rpmmd.RepoConfig{s.RepoConfig},
+			repos:    []rpmmd.RepoConfig_{s.RepoConfig},
 			err:      true,
 			expMsg:   "this-package-does-not-exist",
 		},
@@ -108,7 +108,7 @@ func TestDepsolver(t *testing.T) {
 		"chain-with-sbom": {
 			// chain depsolve of the same packages in order should produce the same result (at least in this case)
 			packages: [][]string{{"kernel"}, {"vim-minimal", "tmux", "zsh"}},
-			repos:    []rpmmd.RepoConfig{s.RepoConfig},
+			repos:    []rpmmd.RepoConfig_{s.RepoConfig},
 			sbomType: sbom.StandardTypeSpdx,
 			err:      false,
 		},
@@ -147,28 +147,28 @@ func TestDepsolver(t *testing.T) {
 }
 
 func TestMakeDepsolveRequest(t *testing.T) {
-	baseOS := rpmmd.RepoConfig{
+	baseOS := rpmmd.RepoConfig_{
 		Name:     "baseos",
 		BaseURLs: []string{"https://example.org/baseos"},
 	}
-	appstream := rpmmd.RepoConfig{
+	appstream := rpmmd.RepoConfig_{
 		Name:     "appstream",
 		BaseURLs: []string{"https://example.org/appstream"},
 	}
-	userRepo := rpmmd.RepoConfig{
+	userRepo := rpmmd.RepoConfig_{
 		Name:     "user-repo",
 		BaseURLs: []string{"https://example.org/user-repo"},
 	}
-	userRepo2 := rpmmd.RepoConfig{
+	userRepo2 := rpmmd.RepoConfig_{
 		Name:     "user-repo-2",
 		BaseURLs: []string{"https://example.org/user-repo-2"},
 	}
-	moduleHotfixRepo := rpmmd.RepoConfig{
+	moduleHotfixRepo := rpmmd.RepoConfig_{
 		Name:           "module-hotfixes",
 		BaseURLs:       []string{"https://example.org/nginx"},
 		ModuleHotfixes: common.ToPtr(true),
 	}
-	mtlsRepo := rpmmd.RepoConfig{
+	mtlsRepo := rpmmd.RepoConfig_{
 		Name:          "mtls",
 		BaseURLs:      []string{"https://example.org/mtls"},
 		SSLCACert:     "/cacert",
@@ -189,7 +189,7 @@ func TestMakeDepsolveRequest(t *testing.T) {
 				{
 					Include: []string{"pkg1"},
 					Exclude: []string{"pkg2"},
-					Repositories: []rpmmd.RepoConfig{
+					Repositories: []rpmmd.RepoConfig_{
 						baseOS,
 						appstream,
 					},
@@ -225,12 +225,12 @@ func TestMakeDepsolveRequest(t *testing.T) {
 				{
 					Include:         []string{"pkg1"},
 					Exclude:         []string{"pkg2"},
-					Repositories:    []rpmmd.RepoConfig{baseOS, appstream},
+					Repositories:    []rpmmd.RepoConfig_{baseOS, appstream},
 					InstallWeakDeps: true,
 				},
 				{
 					Include:      []string{"pkg3"},
-					Repositories: []rpmmd.RepoConfig{baseOS, appstream, userRepo},
+					Repositories: []rpmmd.RepoConfig_{baseOS, appstream, userRepo},
 				},
 			},
 			args: []transactionArgs{
@@ -272,12 +272,12 @@ func TestMakeDepsolveRequest(t *testing.T) {
 				{
 					Include:         []string{"pkg1"},
 					Exclude:         []string{"pkg2"},
-					Repositories:    []rpmmd.RepoConfig{baseOS, appstream},
+					Repositories:    []rpmmd.RepoConfig_{baseOS, appstream},
 					InstallWeakDeps: true,
 				},
 				{
 					Include:      []string{"pkg3"},
-					Repositories: []rpmmd.RepoConfig{baseOS, appstream},
+					Repositories: []rpmmd.RepoConfig_{baseOS, appstream},
 				},
 			},
 			args: []transactionArgs{
@@ -313,16 +313,16 @@ func TestMakeDepsolveRequest(t *testing.T) {
 				{
 					Include:         []string{"pkg1"},
 					Exclude:         []string{"pkg2"},
-					Repositories:    []rpmmd.RepoConfig{baseOS, appstream},
+					Repositories:    []rpmmd.RepoConfig_{baseOS, appstream},
 					InstallWeakDeps: true,
 				},
 				{
 					Include:      []string{"pkg3"},
-					Repositories: []rpmmd.RepoConfig{baseOS, appstream, userRepo},
+					Repositories: []rpmmd.RepoConfig_{baseOS, appstream, userRepo},
 				},
 				{
 					Include:      []string{"pkg4"},
-					Repositories: []rpmmd.RepoConfig{baseOS, appstream, userRepo},
+					Repositories: []rpmmd.RepoConfig_{baseOS, appstream, userRepo},
 				},
 			},
 			args: []transactionArgs{
@@ -369,16 +369,16 @@ func TestMakeDepsolveRequest(t *testing.T) {
 				{
 					Include:         []string{"pkg1"},
 					Exclude:         []string{"pkg2"},
-					Repositories:    []rpmmd.RepoConfig{baseOS, appstream},
+					Repositories:    []rpmmd.RepoConfig_{baseOS, appstream},
 					InstallWeakDeps: true,
 				},
 				{
 					Include:      []string{"pkg3"},
-					Repositories: []rpmmd.RepoConfig{baseOS, appstream, userRepo},
+					Repositories: []rpmmd.RepoConfig_{baseOS, appstream, userRepo},
 				},
 				{
 					Include:      []string{"pkg4"},
-					Repositories: []rpmmd.RepoConfig{baseOS, appstream, userRepo, userRepo2},
+					Repositories: []rpmmd.RepoConfig_{baseOS, appstream, userRepo, userRepo2},
 				},
 			},
 			args: []transactionArgs{
@@ -430,16 +430,16 @@ func TestMakeDepsolveRequest(t *testing.T) {
 				{
 					Include:         []string{"pkg1"},
 					Exclude:         []string{"pkg2"},
-					Repositories:    []rpmmd.RepoConfig{baseOS, appstream},
+					Repositories:    []rpmmd.RepoConfig_{baseOS, appstream},
 					InstallWeakDeps: true,
 				},
 				{
 					Include:      []string{"pkg3"},
-					Repositories: []rpmmd.RepoConfig{baseOS, appstream, userRepo},
+					Repositories: []rpmmd.RepoConfig_{baseOS, appstream, userRepo},
 				},
 				{
 					Include:      []string{"pkg4"},
-					Repositories: []rpmmd.RepoConfig{baseOS, appstream, userRepo2},
+					Repositories: []rpmmd.RepoConfig_{baseOS, appstream, userRepo2},
 				},
 			},
 			err: true,
@@ -450,16 +450,16 @@ func TestMakeDepsolveRequest(t *testing.T) {
 				{
 					Include:         []string{"pkg1"},
 					Exclude:         []string{"pkg2"},
-					Repositories:    []rpmmd.RepoConfig{baseOS, appstream},
+					Repositories:    []rpmmd.RepoConfig_{baseOS, appstream},
 					InstallWeakDeps: true,
 				},
 				{
 					Include:      []string{"pkg3"},
-					Repositories: []rpmmd.RepoConfig{baseOS, appstream, userRepo, userRepo2},
+					Repositories: []rpmmd.RepoConfig_{baseOS, appstream, userRepo, userRepo2},
 				},
 				{
 					Include:      []string{"pkg4"},
-					Repositories: []rpmmd.RepoConfig{baseOS, appstream},
+					Repositories: []rpmmd.RepoConfig_{baseOS, appstream},
 				},
 			},
 			err: true,
@@ -469,7 +469,7 @@ func TestMakeDepsolveRequest(t *testing.T) {
 			packageSets: []rpmmd.PackageSet{
 				{
 					Include:      []string{"pkg1"},
-					Repositories: []rpmmd.RepoConfig{baseOS, appstream, moduleHotfixRepo},
+					Repositories: []rpmmd.RepoConfig_{baseOS, appstream, moduleHotfixRepo},
 				},
 			},
 			args: []transactionArgs{
@@ -505,7 +505,7 @@ func TestMakeDepsolveRequest(t *testing.T) {
 			packageSets: []rpmmd.PackageSet{
 				{
 					Include:      []string{"pkg1"},
-					Repositories: []rpmmd.RepoConfig{baseOS, appstream, mtlsRepo},
+					Repositories: []rpmmd.RepoConfig_{baseOS, appstream, mtlsRepo},
 				},
 			},
 			args: []transactionArgs{
@@ -544,12 +544,12 @@ func TestMakeDepsolveRequest(t *testing.T) {
 				{
 					Include:         []string{"pkg1"},
 					Exclude:         []string{"pkg2"},
-					Repositories:    []rpmmd.RepoConfig{baseOS, appstream},
+					Repositories:    []rpmmd.RepoConfig_{baseOS, appstream},
 					InstallWeakDeps: true,
 				},
 				{
 					Include:      []string{"pkg3"},
-					Repositories: []rpmmd.RepoConfig{baseOS, appstream},
+					Repositories: []rpmmd.RepoConfig_{baseOS, appstream},
 				},
 			},
 			args: []transactionArgs{
@@ -609,7 +609,7 @@ func TestMakeDepsolveRequest(t *testing.T) {
 	}
 }
 
-func expectedResult(repo rpmmd.RepoConfig) []rpmmd.PackageSpec {
+func expectedResult(repo rpmmd.RepoConfig_) []rpmmd.PackageSpec {
 	// need to change the url for the RemoteLocation and the repo ID since the port is different each time and we don't want to have a fixed one
 	expectedTemplate := []rpmmd.PackageSpec{
 		{Name: "acl", Epoch: 0, Version: "2.3.1", Release: "3.el9", Arch: "x86_64", RemoteLocation: "%s/Packages/acl-2.3.1-3.el9.x86_64.rpm", Checksum: "sha256:986044c3837eddbc9231d7be5e5fc517e245296978b988a803bc9f9172fe84ea", Secrets: "", CheckGPG: false, IgnoreSSL: true},
@@ -740,13 +740,13 @@ func TestErrorRepoInfo(t *testing.T) {
 	assert := assert.New(t)
 
 	type testCase struct {
-		repo   rpmmd.RepoConfig
+		repo   rpmmd.RepoConfig_
 		expMsg string
 	}
 
 	testCases := []testCase{
 		{
-			repo: rpmmd.RepoConfig{
+			repo: rpmmd.RepoConfig_{
 				Name:     "",
 				BaseURLs: []string{"https://0.0.0.0/baseos/repo"},
 				Metalink: "https://0.0.0.0/baseos/metalink",
@@ -754,7 +754,7 @@ func TestErrorRepoInfo(t *testing.T) {
 			expMsg: "https://0.0.0.0/baseos/repo",
 		},
 		{
-			repo: rpmmd.RepoConfig{
+			repo: rpmmd.RepoConfig_{
 				Name:     "baseos",
 				BaseURLs: []string{"https://0.0.0.0/baseos/repo"},
 				Metalink: "https://0.0.0.0/baseos/metalink",
@@ -762,14 +762,14 @@ func TestErrorRepoInfo(t *testing.T) {
 			expMsg: "https://0.0.0.0/baseos/repo",
 		},
 		{
-			repo: rpmmd.RepoConfig{
+			repo: rpmmd.RepoConfig_{
 				Name:     "fedora",
 				Metalink: "https://0.0.0.0/f35/metalink",
 			},
 			expMsg: "https://0.0.0.0/f35/metalink",
 		},
 		{
-			repo: rpmmd.RepoConfig{
+			repo: rpmmd.RepoConfig_{
 				Name:       "",
 				MirrorList: "https://0.0.0.0/baseos/mirrors",
 			},
@@ -784,7 +784,7 @@ func TestErrorRepoInfo(t *testing.T) {
 				{
 					Include:      []string{"osbuild"},
 					Exclude:      nil,
-					Repositories: []rpmmd.RepoConfig{tc.repo},
+					Repositories: []rpmmd.RepoConfig_{tc.repo},
 				},
 			}, sbom.StandardTypeNone)
 			assert.Error(err)
@@ -794,7 +794,7 @@ func TestErrorRepoInfo(t *testing.T) {
 }
 
 func TestRepoConfigHash(t *testing.T) {
-	repos := []rpmmd.RepoConfig{
+	repos := []rpmmd.RepoConfig_{
 		{
 			Id:        "repoid-1",
 			Name:      "A test repository",
@@ -819,8 +819,8 @@ func TestRepoConfigHash(t *testing.T) {
 
 func TestRequestHash(t *testing.T) {
 	solver := NewSolver("platform:f38", "38", "x86_64", "fedora-38", "/tmp/cache")
-	repos := []rpmmd.RepoConfig{
-		rpmmd.RepoConfig{
+	repos := []rpmmd.RepoConfig_{
+		rpmmd.RepoConfig_{
 			Name:      "A test repository",
 			BaseURLs:  []string{"https://arepourl/"},
 			IgnoreSSL: common.ToPtr(false),

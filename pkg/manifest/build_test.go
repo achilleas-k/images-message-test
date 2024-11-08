@@ -13,7 +13,7 @@ import (
 )
 
 func TestBuildContainerBuildableNo(t *testing.T) {
-	repos := []rpmmd.RepoConfig{}
+	repos := []rpmmd.RepoConfig_{}
 	mf := New()
 	runner := &runner.Fedora{Version: 39}
 

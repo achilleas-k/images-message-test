@@ -10,7 +10,7 @@ import (
 )
 
 func TestNewYumReposStage(t *testing.T) {
-	stageOptions := NewYumReposStageOptions("testing.repo", []rpmmd.RepoConfig{
+	stageOptions := NewYumReposStageOptions("testing.repo", []rpmmd.RepoConfig_{
 		{
 			Id:       "cool-id",
 			BaseURLs: []string{"http://example.org/repo"},

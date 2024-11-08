@@ -184,7 +184,7 @@ func (t *imageType) PartitionType() string {
 
 func (t *imageType) Manifest(bp *blueprint.Blueprint,
 	options distro.ImageOptions,
-	repos []rpmmd.RepoConfig,
+	repos []rpmmd.RepoConfig_,
 	seed int64) (*manifest.Manifest, []string, error) {
 
 	warnings, err := t.checkOptions(bp, options)
@@ -204,7 +204,7 @@ func (t *imageType) Manifest(bp *blueprint.Blueprint,
 	}
 
 	// amend with repository information and collect payload repos
-	payloadRepos := make([]rpmmd.RepoConfig, 0)
+	payloadRepos := make([]rpmmd.RepoConfig_, 0)
 	for _, repo := range repos {
 		if len(repo.PackageSets) > 0 {
 			// only apply the repo to the listed package sets

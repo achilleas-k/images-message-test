@@ -13,7 +13,7 @@ import (
 func getTestingRepoRegistry() *RepoRegistry {
 	testDistro := test_distro.DistroFactory(test_distro.TestDistro1Name)
 	return &RepoRegistry{
-		map[string]map[string][]rpmmd.RepoConfig{
+		map[string]map[string][]rpmmd.RepoConfig_{
 			testDistro.Name(): {
 				test_distro.TestArchName: {
 					{
@@ -123,7 +123,7 @@ func TestInvalidreposByImageTypeName(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want func(repos []rpmmd.RepoConfig, err error) bool
+		want func(repos []rpmmd.RepoConfig_, err error) bool
 	}{
 		{
 			name: "invalid distro, valid arch and image type",
@@ -132,7 +132,7 @@ func TestInvalidreposByImageTypeName(t *testing.T) {
 				arch:      test_distro.TestArchName,
 				imageType: test_distro.TestImageTypeName,
 			},
-			want: func(repos []rpmmd.RepoConfig, err error) bool {
+			want: func(repos []rpmmd.RepoConfig_, err error) bool {
 				// the list of repos should be nil and an error should be returned
 				if repos != nil || err == nil {
 					return false
@@ -147,7 +147,7 @@ func TestInvalidreposByImageTypeName(t *testing.T) {
 				arch:      test_distro.TestArchName + "-invalid",
 				imageType: test_distro.TestImageTypeName,
 			},
-			want: func(repos []rpmmd.RepoConfig, err error) bool {
+			want: func(repos []rpmmd.RepoConfig_, err error) bool {
 				// the list of repos should be nil and an error should be returned
 				if repos != nil || err == nil {
 					return false
@@ -162,7 +162,7 @@ func TestInvalidreposByImageTypeName(t *testing.T) {
 				arch:      test_distro.TestArchName,
 				imageType: test_distro.TestImageTypeName + "-invalid",
 			},
-			want: func(repos []rpmmd.RepoConfig, err error) bool {
+			want: func(repos []rpmmd.RepoConfig_, err error) bool {
 				// a non-empty list of repos should be returned without an error
 				if repos == nil || err != nil {
 					return false
@@ -182,7 +182,7 @@ func TestInvalidreposByImageTypeName(t *testing.T) {
 				arch:      test_distro.TestArch2Name,
 				imageType: test_distro.TestImageTypeName + "-invalid",
 			},
-			want: func(repos []rpmmd.RepoConfig, err error) bool {
+			want: func(repos []rpmmd.RepoConfig_, err error) bool {
 				// a non-empty list of repos should be returned without an error
 				if repos == nil || err != nil {
 					return false
@@ -300,7 +300,7 @@ func TestInvalidReposByArchName(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want func(repos []rpmmd.RepoConfig, err error) bool
+		want func(repos []rpmmd.RepoConfig_, err error) bool
 	}{
 		{
 			name: "invalid distro, valid arch, without tagged repos",
@@ -309,7 +309,7 @@ func TestInvalidReposByArchName(t *testing.T) {
 				arch:        test_distro.TestArch2Name,
 				taggedRepos: false,
 			},
-			want: func(repos []rpmmd.RepoConfig, err error) bool {
+			want: func(repos []rpmmd.RepoConfig_, err error) bool {
 				// the list of repos should be nil and an error should be returned
 				if repos != nil || err == nil {
 					return false
@@ -324,7 +324,7 @@ func TestInvalidReposByArchName(t *testing.T) {
 				arch:        test_distro.TestArch2Name,
 				taggedRepos: true,
 			},
-			want: func(repos []rpmmd.RepoConfig, err error) bool {
+			want: func(repos []rpmmd.RepoConfig_, err error) bool {
 				// the list of repos should be nil and an error should be returned
 				if repos != nil || err == nil {
 					return false
@@ -339,7 +339,7 @@ func TestInvalidReposByArchName(t *testing.T) {
 				arch:        test_distro.TestArch2Name + "-invalid",
 				taggedRepos: false,
 			},
-			want: func(repos []rpmmd.RepoConfig, err error) bool {
+			want: func(repos []rpmmd.RepoConfig_, err error) bool {
 				// the list of repos should be nil and an error should be returned
 				if repos != nil || err == nil {
 					return false
@@ -354,7 +354,7 @@ func TestInvalidReposByArchName(t *testing.T) {
 				arch:        test_distro.TestArch2Name + "-invalid",
 				taggedRepos: true,
 			},
-			want: func(repos []rpmmd.RepoConfig, err error) bool {
+			want: func(repos []rpmmd.RepoConfig_, err error) bool {
 				// the list of repos should be nil and an error should be returned
 				if repos != nil || err == nil {
 					return false

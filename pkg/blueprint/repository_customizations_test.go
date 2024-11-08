@@ -168,7 +168,7 @@ func TestCustomRepoToRepoConfigAndGPGKeys(t *testing.T) {
 	testCases := []struct {
 		Name           string
 		Repos          []RepositoryCustomization
-		WantRepoConfig map[string][]rpmmd.RepoConfig
+		WantRepoConfig map[string][]rpmmd.RepoConfig_
 		WantGPGKeys    []*fsnode.File
 	}{
 		{
@@ -183,7 +183,7 @@ func TestCustomRepoToRepoConfigAndGPGKeys(t *testing.T) {
 					BaseURLs: []string{"http://example-2.com"},
 				},
 			},
-			WantRepoConfig: map[string][]rpmmd.RepoConfig{
+			WantRepoConfig: map[string][]rpmmd.RepoConfig_{
 				"example-1.repo": {
 					{
 						Id:       "example-1",
@@ -215,7 +215,7 @@ func TestCustomRepoToRepoConfigAndGPGKeys(t *testing.T) {
 					Filename: "test-2.repo",
 				},
 			},
-			WantRepoConfig: map[string][]rpmmd.RepoConfig{
+			WantRepoConfig: map[string][]rpmmd.RepoConfig_{
 				"test-1.repo": {
 					{
 						Id:       "example-1",
@@ -249,7 +249,7 @@ func TestCustomRepoToRepoConfigAndGPGKeys(t *testing.T) {
 					GPGCheck: common.ToPtr(true),
 				},
 			},
-			WantRepoConfig: map[string][]rpmmd.RepoConfig{
+			WantRepoConfig: map[string][]rpmmd.RepoConfig_{
 				"example-1.repo": {
 					{
 						Id:       "example-1",
@@ -285,7 +285,7 @@ func TestCustomRepoToRepoConfigAndGPGKeys(t *testing.T) {
 					GPGCheck: common.ToPtr(true),
 				},
 			},
-			WantRepoConfig: map[string][]rpmmd.RepoConfig{
+			WantRepoConfig: map[string][]rpmmd.RepoConfig_{
 				"example-1.repo": {
 					{
 						Id:       "example-1",
@@ -330,7 +330,7 @@ func TestCustomRepoToRepoConfigAndGPGKeys(t *testing.T) {
 					GPGCheck: common.ToPtr(true),
 				},
 			},
-			WantRepoConfig: map[string][]rpmmd.RepoConfig{
+			WantRepoConfig: map[string][]rpmmd.RepoConfig_{
 				"example-1.repo": {
 					{
 						Id:       "example-1",

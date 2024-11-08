@@ -46,7 +46,7 @@ type OSCustomizations struct {
 	ExcludeBasePackages []string
 
 	// Additional repos to install the base packages from.
-	ExtraBaseRepos []rpmmd.RepoConfig
+	ExtraBaseRepos []rpmmd.RepoConfig_
 
 	// Containers to embed in the image (source specification)
 	// TODO: move to workload
@@ -175,7 +175,7 @@ type OS struct {
 	PartitionTable *disk.PartitionTable
 
 	// content-related fields
-	repos            []rpmmd.RepoConfig
+	repos            []rpmmd.RepoConfig_
 	packageSpecs     []rpmmd.PackageSpec
 	containerSpecs   []container.Spec
 	ostreeParentSpec *ostree.CommitSpec
@@ -196,7 +196,7 @@ type OS struct {
 // NewOS creates a new OS pipeline. build is the build pipeline to use for
 // building the OS pipeline. platform is the target platform for the final
 // image. repos are the repositories to install RPMs from.
-func NewOS(buildPipeline Build, platform platform.Platform, repos []rpmmd.RepoConfig) *OS {
+func NewOS(buildPipeline Build, platform platform.Platform, repos []rpmmd.RepoConfig_) *OS {
 	name := "os"
 	p := &OS{
 		Base:            NewBase(name, buildPipeline),
@@ -374,7 +374,7 @@ func (p *OS) getContainerSpecs() []container.Spec {
 	return p.containerSpecs
 }
 
-func (p *OS) serializeStart(packages []rpmmd.PackageSpec, containers []container.Spec, commits []ostree.CommitSpec, rpmRepos []rpmmd.RepoConfig) {
+func (p *OS) serializeStart(packages []rpmmd.PackageSpec, containers []container.Spec, commits []ostree.CommitSpec, rpmRepos []rpmmd.RepoConfig_) {
 	if len(p.packageSpecs) > 0 {
 		panic("double call to serializeStart()")
 	}

@@ -60,7 +60,7 @@ func NewAnacondaOSTreeInstaller(commit ostree.SourceSpec) *AnacondaOSTreeInstall
 }
 
 func (img *AnacondaOSTreeInstaller) InstantiateManifest(m *manifest.Manifest,
-	repos []rpmmd.RepoConfig,
+	repos []rpmmd.RepoConfig_,
 	runner runner.Runner,
 	rng *rand.Rand) (*artifact.Artifact, error) {
 	buildPipeline := manifest.NewBuild(m, runner, repos, nil)

@@ -73,7 +73,7 @@ type YumReposStageOptions struct {
 func (YumReposStageOptions) isStageOptions() {}
 
 // NewYumReposStageOptions creates a new YumRepos Stage options object.
-func NewYumReposStageOptions(filename string, repos []rpmmd.RepoConfig) *YumReposStageOptions {
+func NewYumReposStageOptions(filename string, repos []rpmmd.RepoConfig_) *YumReposStageOptions {
 	var yumRepos []YumRepository
 	for _, repo := range repos {
 		yumRepos = append(yumRepos, repoConfigToYumRepository(repo))
@@ -85,7 +85,7 @@ func NewYumReposStageOptions(filename string, repos []rpmmd.RepoConfig) *YumRepo
 	}
 }
 
-func repoConfigToYumRepository(repo rpmmd.RepoConfig) YumRepository {
+func repoConfigToYumRepository(repo rpmmd.RepoConfig_) YumRepository {
 	urls := make([]string, len(repo.BaseURLs))
 	copy(urls, repo.BaseURLs)
 

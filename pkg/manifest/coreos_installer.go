@@ -22,10 +22,10 @@ type CoreOSInstaller struct {
 	ExcludePackages []string
 
 	// Extra repositories to install packages from
-	ExtraRepos []rpmmd.RepoConfig
+	ExtraRepos []rpmmd.RepoConfig_
 
 	platform     platform.Platform
-	repos        []rpmmd.RepoConfig
+	repos        []rpmmd.RepoConfig_
 	packageSpecs []rpmmd.PackageSpec
 	kernelName   string
 	kernelVer    string
@@ -49,7 +49,7 @@ type CoreOSInstaller struct {
 // NewCoreOSInstaller creates an CoreOS installer pipeline object.
 func NewCoreOSInstaller(buildPipeline Build,
 	platform platform.Platform,
-	repos []rpmmd.RepoConfig,
+	repos []rpmmd.RepoConfig_,
 	kernelName,
 	product,
 	version string) *CoreOSInstaller {
@@ -136,7 +136,7 @@ func (p *CoreOSInstaller) getPackageSpecs() []rpmmd.PackageSpec {
 	return p.packageSpecs
 }
 
-func (p *CoreOSInstaller) serializeStart(packages []rpmmd.PackageSpec, _ []container.Spec, _ []ostree.CommitSpec, rpmRepos []rpmmd.RepoConfig) {
+func (p *CoreOSInstaller) serializeStart(packages []rpmmd.PackageSpec, _ []container.Spec, _ []ostree.CommitSpec, rpmRepos []rpmmd.RepoConfig_) {
 	if len(p.packageSpecs) > 0 {
 		panic("double call to serializeStart()")
 	}

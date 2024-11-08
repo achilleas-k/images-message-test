@@ -18,7 +18,7 @@ import (
 func TestOSTreeDiskImageManifestSetsContainerBuildable(t *testing.T) {
 	rng := rand.New(rand.NewSource(0)) // nolint:gosec
 
-	repos := []rpmmd.RepoConfig{}
+	repos := []rpmmd.RepoConfig_{}
 	r := &runner.Fedora{Version: 39}
 
 	ref := "ostree/1/1/0"
@@ -28,7 +28,7 @@ func TestOSTreeDiskImageManifestSetsContainerBuildable(t *testing.T) {
 	}
 
 	var buildOpts []*manifest.BuildOptions
-	restore := image.MockManifestNewBuild(func(m *manifest.Manifest, r runner.Runner, repos []rpmmd.RepoConfig, opts *manifest.BuildOptions) manifest.Build {
+	restore := image.MockManifestNewBuild(func(m *manifest.Manifest, r runner.Runner, repos []rpmmd.RepoConfig_, opts *manifest.BuildOptions) manifest.Build {
 		buildOpts = append(buildOpts, opts)
 		return manifest.NewBuild(m, r, repos, opts)
 	})
